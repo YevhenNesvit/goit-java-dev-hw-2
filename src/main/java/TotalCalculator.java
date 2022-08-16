@@ -1,12 +1,10 @@
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 class TotalCalculator {
     ProductsBase productsBase = new ProductsBase();
-    public List<Product> repository = List.of(productsBase.getProductA(), productsBase.getProductB(),
-            productsBase.getProductC(), productsBase.getProductD());
 
+    public HashMap<String, Product> repository = new HashMap<>();
     public HashMap<String, Integer> getQuantityPerProduct(String names) {
         String[] list;
         try {
@@ -23,26 +21,30 @@ class TotalCalculator {
         return productsCount;
     }
 
+    public HashMap<String, Product> repositoryFilling() {
+        repository.put("A", productsBase.getProductA());
+        repository.put("B", productsBase.getProductB());
+        repository.put("C", productsBase.getProductC());
+        repository.put("D", productsBase.getProductD());
+
+        return repository;
+    }
+
     public double getSum(String shoppingCart) {
         HashMap<String, Integer> productsQuantity = getQuantityPerProduct(shoppingCart);
         double simpleSum = 0;
         double discountedSum = 0;
-        int count = 0;
 
         for (Map.Entry<String, Integer> item : productsQuantity.entrySet()) {
-            if (!item.getKey().equals(repository.get(count).getProductName())) {
-                count++;
-            }
-            if (repository.get(count).getDiscountedQuantity() != 0) {
-                if (item.getValue() >= repository.get(count).getDiscountedQuantity()) {
-                    discountedSum += item.getValue() * (repository.get(count).getDiscountedPrice() / repository.get(count).getDiscountedQuantity());
+            if (repositoryFilling().containsKey(item.getKey())) {
+                if (item.getValue() == repositoryFilling().get(item.getKey()).getDiscountedQuantity()) {
+                    discountedSum += repositoryFilling().get(item.getKey()).getDiscountedPrice();
                 } else {
-                    simpleSum += item.getValue() * repository.get(count).getProductPrice();
+                    simpleSum += item.getValue() * repositoryFilling().get(item.getKey()).getProductPrice();
                 }
             } else {
-                simpleSum += item.getValue() * repository.get(count).getProductPrice();
+                simpleSum += item.getValue() * repositoryFilling().get(item.getKey()).getProductPrice();
             }
-            count++;
         }
 
         return simpleSum + discountedSum;
