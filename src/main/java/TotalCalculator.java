@@ -42,8 +42,6 @@ class TotalCalculator {
                 } else {
                     simpleSum += item.getValue() * repositoryFilling().get(item.getKey()).getProductPrice();
                 }
-            } else {
-                simpleSum += item.getValue() * repositoryFilling().get(item.getKey()).getProductPrice();
             }
         }
 
